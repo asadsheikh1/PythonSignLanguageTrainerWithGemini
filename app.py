@@ -20,11 +20,11 @@ async def detect(websocket: WebSocket):
         image_file.write(frame)
 
     # Download the ASL diagram image
-    asl_diagram_img_path = "https://raw.githubusercontent.com/asadsheikh1/PythonSignLanguageTrainerWithGemini/main/train.png"
-    asl_diagram_response = requests.get(asl_diagram_img_path)
-    if asl_diagram_response.status_code != 200:
-        await websocket.close(code=1002, reason="Failed to download ASL diagram")
-        return
+    # asl_diagram_img_path = "https://raw.githubusercontent.com/asadsheikh1/PythonSignLanguageTrainerWithGemini/main/train.png"
+    # asl_diagram_response = requests.get(asl_diagram_img_path)
+    # if asl_diagram_response.status_code != 200:
+    #     await websocket.close(code=1002, reason="Failed to download ASL diagram")
+    #     return
 
     # Prepare prompt parts
     image_parts = [{"mime_type": "image/jpeg", "data": frame}]
@@ -38,37 +38,36 @@ async def detect(websocket: WebSocket):
         {"text": text_parts[0] + text_parts[1]}
     ]
 
-    # Generation and safety settings
     generation_config = {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": 1,
-        "max_output_tokens": 256
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 0,
+    "max_output_tokens": 8192,
     }
-    safety_settings = [
-    {
-        "category": "HARM_CATEGORY_HARASSMENT",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-        "category": "HARM_CATEGORY_HATE_SPEECH",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-        "threshold": "BLOCK_ONLY_HIGH"
-    },
-    ]
+    # safety_settings = [
+    # {
+    #     "category": "HARM_CATEGORY_HARASSMENT",
+    #     "threshold": "BLOCK_ONLY_HIGH"
+    # },
+    # {
+    #     "category": "HARM_CATEGORY_HATE_SPEECH",
+    #     "threshold": "BLOCK_ONLY_HIGH"
+    # },
+    # {
+    #     "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    #     "threshold": "BLOCK_ONLY_HIGH"
+    # },
+    # {
+    #     "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+    #     "threshold": "BLOCK_ONLY_HIGH"
+    # },
+    # ]
     
     # Create model instance
     model_pro_1_0_vision = genai.GenerativeModel(
-        model_name="gemini-1.0-pro-vision-latest",
-        generation_config=generation_config,
-        safety_settings=safety_settings
+        model_name="gemini-1.5-pro-latest",
+        generation_config=generation_config
+        #safety_settings=safety_settings
     )
     
     # Generate the response
