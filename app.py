@@ -1,12 +1,16 @@
 from fastapi import FastAPI, WebSocket
 import uvicorn
+import os
+from dotenv import load_dotenv
 import google.generativeai as genai
+
+load_dotenv()
 import requests
 
 app = FastAPI()
 
 # Configure the API key globally, not in the endpoint
-genai.configure(api_key="***REMOVED***")
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 @app.websocket('/detect')
 async def detect(websocket: WebSocket):

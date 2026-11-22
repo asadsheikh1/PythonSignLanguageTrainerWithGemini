@@ -6,9 +6,13 @@ $ pip install google-generativeai
 
 from pathlib import Path
 import hashlib
+import os
+from dotenv import load_dotenv
 import google.generativeai as genai
 
-genai.configure(api_key="***REMOVED***")
+load_dotenv()
+
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 # Set up the model
 generation_config = {
